@@ -29,7 +29,9 @@ class TripServiceTest {
         //given
         String userId = "some-id";
         String tripCode = "some-trip";
-        Trip trip = new Trip(tripCode, 1);
+        Trip trip = new Trip();
+        trip.setTripCode(tripCode);
+        trip.setSeats(1);
         when(tripRepository.findTrip(anyString())).thenReturn(trip);
 
         //when
@@ -45,11 +47,16 @@ class TripServiceTest {
         String userId = "some-id";
         String tripCode = "some-trip";
         List<Reservation> reservations = new ArrayList<>();
-        Reservation newReservation = new Reservation(userId);
+        Reservation newReservation = new Reservation();
+        newReservation.setUserId(userId);
         reservations.add(newReservation);
-        Reservation canceledReservation = new Reservation(userId).cancel();
+        Reservation canceledReservation = new Reservation();
+        canceledReservation.setStatus(Reservation.ReservationStatus.CANCELED);
         reservations.add(canceledReservation);
-        Trip trip = new Trip(tripCode, 1, reservations);
+        Trip trip = new Trip();
+        trip.setTripCode(tripCode);
+        trip.setReservations(reservations);
+        trip.setSeats(1);
         when(tripRepository.findTrip(anyString())).thenReturn(trip);
 
         //when
@@ -74,9 +81,14 @@ class TripServiceTest {
         String userId = "some-id";
         String tripCode = "some-trip";
         List<Reservation> reservations = new ArrayList<>();
-        Reservation reservation = new Reservation(userId).confirm();
+        Reservation reservation = new Reservation();
+        reservation.setUserId(userId);
+        reservation.setStatus(Reservation.ReservationStatus.CONFIRMED);
         reservations.add(reservation);
-        Trip trip = new Trip(tripCode, 1, reservations);
+        Trip trip = new Trip();
+        trip.setTripCode(tripCode);
+        trip.setReservations(reservations);
+        trip.setSeats(1);
         when(tripRepository.findTrip(anyString())).thenReturn(trip);
 
         //when
