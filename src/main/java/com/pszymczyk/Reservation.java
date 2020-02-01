@@ -7,12 +7,24 @@ public class Reservation {
     public enum ReservationStatus {
         NEW,
         CONFIRMED,
-        CANCELED
-    }
+        CANCELED;
 
+    }
     private UUID id;
     private String userId;
+
     private ReservationStatus status;
+
+    ReservationSummary newReservationSummary() {
+        ReservationSummary reservationSummary = new ReservationSummary();
+        reservationSummary.setStatus(ReservationStatus.NEW.toString());
+        reservationSummary.setReservationId(getId().toString());
+        return reservationSummary;
+    }
+
+    boolean isConfirmed() {
+        return getStatus() == ReservationStatus.CONFIRMED;
+    }
 
     public UUID getId() {
         return id;
