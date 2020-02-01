@@ -1,10 +1,10 @@
 package com.pszymczyk;
 
-class TripService {
+class BookTripFeature {
 
     private final TripRepository tripRepository;
 
-    TripService(TripRepository tripRepository) {
+    BookTripFeature(TripRepository tripRepository, ReservationFactory reservationFactory) {
         this.tripRepository = tripRepository;
     }
 

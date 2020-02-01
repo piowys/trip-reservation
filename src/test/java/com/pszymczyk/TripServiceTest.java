@@ -16,13 +16,13 @@ import static org.mockito.Mockito.when;
 
 class TripServiceTest {
 
-    private TripService tripService;
+    private BookTripFeature bookTripFeature;
     private TripRepository tripRepository;
 
     @BeforeEach
     void setup() {
         tripRepository = mock(TripRepository.class);
-        tripService = new TripService(tripRepository);
+        bookTripFeature = new BookTripFeature(tripRepository, reservationFactory);
     }
 
     @Test
@@ -36,7 +36,7 @@ class TripServiceTest {
         when(tripRepository.findTrip(anyString())).thenReturn(trip);
 
         //when
-        tripService.book(userId, tripCode);
+        bookTripFeature.book(userId, tripCode);
 
         //then
         assertThat(trip.getNewReservations()).hasSize(1);
@@ -59,7 +59,7 @@ class TripServiceTest {
         when(tripRepository.findTrip(anyString())).thenReturn(trip);
 
         //when
-        tripService.book(userId, tripCode);
+        bookTripFeature.book(userId, tripCode);
 
         //then
         assertThat(trip.getNewReservations()).hasSize(3);
@@ -68,7 +68,7 @@ class TripServiceTest {
     @Test
     void Should_throw_exception_when_cannot_find_trip() {
         //when
-        Throwable thrown = catchThrowable(() -> tripService.book("some-id", "some-trip"));
+        Throwable thrown = catchThrowable(() -> bookTripFeature.book("some-id", "some-trip"));
 
         //then
         assertThat(thrown).isInstanceOf(TripNotFound.class);
@@ -89,7 +89,7 @@ class TripServiceTest {
         when(tripRepository.findTrip(anyString())).thenReturn(trip);
 
         //when
-        Throwable thrown = catchThrowable(() -> tripService.book(userId, tripCode));
+        Throwable thrown = catchThrowable(() -> bookTripFeature.book(userId, tripCode));
 
         //then
         assertThat(thrown).isInstanceOf(TripFullyBooked.class);
