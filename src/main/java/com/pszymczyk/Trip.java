@@ -8,7 +8,8 @@ class Trip {
 
     private String tripCode;
     private int seats;
-    private List<Reservation> reservations = new ArrayList<>();
+    private List<NewReservation> newReservations = new ArrayList<>();
+    private List<ConfirmedReservation> confirmedReservations = new ArrayList<>();
 
     public String getTripCode() {
         return tripCode;
@@ -26,40 +27,39 @@ class Trip {
         this.seats = seats;
     }
 
-    public List<Reservation> getReservations() {
-        return reservations;
+    public List<NewReservation> getNewReservations() {
+        return newReservations;
     }
 
-    public void setReservations(List<Reservation> reservations) {
-        this.reservations = reservations;
+    public void setNewReservations(List<NewReservation> newReservations) {
+        this.newReservations = newReservations;
+    }
+
+    void setConfirmedReservations(List<ConfirmedReservation> confirmedReservations) {
+        this.confirmedReservations = confirmedReservations;
     }
 
     ReservationSummary requestReservation(String userId) {
         checkAvailability();
-        Reservation reservation = newReservation(userId);
-        getReservations().add(reservation);
-        return reservation.newReservationSummary();
+        NewReservation newReservation = newReservation(userId);
+        getNewReservations().add(newReservation);
+        return newReservation.newReservationSummary();
     }
 
     private void checkAvailability() {
-        if (isFullyBooked()) {
+            if (isFullyBooked()) {
             throw new TripFullyBooked(tripCode);
         }
     }
 
     private boolean isFullyBooked() {
-        return getReservationsCount() >= getSeats();
+        return confirmedReservations.size() >= getSeats();
     }
 
-    private long getReservationsCount() {
-        return getReservations().stream().filter(Reservation::isConfirmed).count();
-    }
-
-    private Reservation newReservation(String userId) {
-        Reservation reservation = new Reservation();
-        reservation.setId(UUID.randomUUID());
-        reservation.setStatus(Reservation.ReservationStatus.NEW);
-        reservation.setUserId(userId);
-        return reservation;
+    private NewReservation newReservation(String userId) {
+        NewReservation newReservation = new NewReservation();
+        newReservation.setId(UUID.randomUUID());
+        newReservation.setUserId(userId);
+        return newReservation;
     }
 }

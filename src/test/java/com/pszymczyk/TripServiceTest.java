@@ -2,6 +2,7 @@ package com.pszymczyk;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -38,7 +39,7 @@ class TripServiceTest {
         tripService.book(userId, tripCode);
 
         //then
-        assertThat(trip.getReservations()).hasSize(1);
+        assertThat(trip.getNewReservations()).hasSize(1);
     }
 
     @Test
@@ -46,16 +47,14 @@ class TripServiceTest {
         //given
         String userId = "some-id";
         String tripCode = "some-trip";
-        List<Reservation> reservations = new ArrayList<>();
-        Reservation newReservation = new Reservation();
+        List<NewReservation> newReservations = new ArrayList<>();
+        NewReservation newReservation = new NewReservation();
         newReservation.setUserId(userId);
-        reservations.add(newReservation);
-        Reservation canceledReservation = new Reservation();
-        canceledReservation.setStatus(Reservation.ReservationStatus.CANCELED);
-        reservations.add(canceledReservation);
+        newReservations.add(newReservation);
+        newReservations.add(newReservation);
         Trip trip = new Trip();
         trip.setTripCode(tripCode);
-        trip.setReservations(reservations);
+        trip.setNewReservations(newReservations);
         trip.setSeats(1);
         when(tripRepository.findTrip(anyString())).thenReturn(trip);
 
@@ -63,7 +62,7 @@ class TripServiceTest {
         tripService.book(userId, tripCode);
 
         //then
-        assertThat(trip.getReservations()).hasSize(3);
+        assertThat(trip.getNewReservations()).hasSize(3);
     }
 
     @Test
@@ -80,14 +79,12 @@ class TripServiceTest {
         //given
         String userId = "some-id";
         String tripCode = "some-trip";
-        List<Reservation> reservations = new ArrayList<>();
-        Reservation reservation = new Reservation();
-        reservation.setUserId(userId);
-        reservation.setStatus(Reservation.ReservationStatus.CONFIRMED);
-        reservations.add(reservation);
+        ConfirmedReservation confirmedReservation = new ConfirmedReservation(UUID.randomUUID(), userId);
+        List<ConfirmedReservation> confirmedReservations = new ArrayList<>();
+        confirmedReservations.add(confirmedReservation);
         Trip trip = new Trip();
         trip.setTripCode(tripCode);
-        trip.setReservations(reservations);
+        trip.setConfirmedReservations(confirmedReservations);
         trip.setSeats(1);
         when(tripRepository.findTrip(anyString())).thenReturn(trip);
 

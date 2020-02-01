@@ -1,8 +1,8 @@
 package com.pszymczyk;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
 class ReservationTest {
@@ -10,51 +10,51 @@ class ReservationTest {
     @Test
     void Should_confirm_reservation() {
         //given
-        Reservation reservation = new Reservation();
+        NewReservation newReservation = new NewReservation();
 
         //when
-        reservation.confirm();
+        ConfirmedReservation confirmedReservation = newReservation.confirm();
 
         //then
-        Assertions.assertThat(reservation.isConfirmed()).isTrue();
+        assertThat(confirmedReservation).isNotNull();
     }
 
     @Test
     void Should_not_allow_to_confirm_canceled_reservation() {
         //given
-        Reservation reservation = new Reservation();
-        reservation.cancel();
+        NewReservation newReservation = new NewReservation();
+        newReservation.cancel();
 
         //when
-        Throwable thrown = catchThrowable(reservation::confirm);
+        Throwable thrown = catchThrowable(newReservation::confirm);
 
         //then
-        Assertions.assertThat(thrown).isInstanceOf(IllegalStateException.class);
+        assertThat(thrown).isInstanceOf(IllegalStateException.class);
     }
 
     @Test
     void Should_cancel_reservation() {
         //given
-        Reservation reservation = new Reservation();
+        NewReservation newReservation = new NewReservation();
 
         //when
-        reservation.cancel();
+        CanceledReservation canceledReservation = newReservation.cancel();
 
         //then
-        Assertions.assertThat(reservation.isCanceled()).isTrue();
+        assertThat(canceledReservation).isNotNull();
     }
 
     @Test
     void Should_not_allow_to_cancel_confirmed_reservation() {
         //given
-        Reservation reservation = new Reservation();
-        reservation.confirm();
+        NewReservation newReservation = new NewReservation();
+        newReservation.confirm();
 
         //when
-        Throwable thrown = catchThrowable(reservation::cancel);
+        Throwable thrown = catchThrowable(newReservation::cancel);
 
         //then
-        Assertions.assertThat(thrown).isInstanceOf(IllegalStateException.class);
+        assertThat(thrown).isInstanceOf(IllegalStateException.class);
     }
 
 }

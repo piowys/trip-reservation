@@ -2,7 +2,7 @@ package com.pszymczyk;
 
 import java.util.UUID;
 
-public class Reservation {
+public class NewReservation {
 
     public enum ReservationStatus {
         NEW,
@@ -14,33 +14,28 @@ public class Reservation {
 
     private String userId;
     private ReservationStatus status;
-    ReservationSummary newReservationSummary() {
-        ReservationSummary reservationSummary = new ReservationSummary();
-        reservationSummary.setStatus(ReservationStatus.NEW.toString());
-        reservationSummary.setReservationId(getId().toString());
-        return reservationSummary;
-    }
-    public void cancel() {
+
+    public CanceledReservation cancel() {
         if (status == ReservationStatus.CONFIRMED) {
             throw new IllegalStateException();
         }
         this.status = ReservationStatus.CANCELED;
+        return new CanceledReservation(id, userId);
     }
-
-    public boolean isCanceled() {
-        return status == ReservationStatus.CANCELED;
-    }
-
-    public void confirm() {
+    public ConfirmedReservation confirm() {
         if (status == ReservationStatus.CANCELED) {
             throw new IllegalStateException();
         }
 
         status = ReservationStatus.CONFIRMED;
+        return new ConfirmedReservation(id, userId);
     }
 
-    boolean isConfirmed() {
-        return getStatus() == ReservationStatus.CONFIRMED;
+    ReservationSummary newReservationSummary() {
+        ReservationSummary reservationSummary = new ReservationSummary();
+        reservationSummary.setStatus(ReservationStatus.NEW.toString());
+        reservationSummary.setReservationId(getId().toString());
+        return reservationSummary;
     }
 
     public UUID getId() {
@@ -63,7 +58,4 @@ public class Reservation {
         return status;
     }
 
-    public void setStatus(ReservationStatus status) {
-        this.status = status;
-    }
 }
